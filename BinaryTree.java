@@ -1,0 +1,108 @@
+public class BinaryTree {
+    Node root;
+
+    public BinaryTree() {
+        root = null;
+    }
+
+    public void insert(int value) {
+        Node newNode = new Node(value);
+        if (root == null) {
+            root = newNode;
+        } else {
+            Node current = root;
+            Node parent;
+            while (true) {
+                parent = current;
+                if (value < current.value) {
+                    current = current.leftChild;
+                    if (current == null) {
+                        parent.leftChild = newNode;
+                        return;
+                    }
+                } else {
+                    current = current.rightChild;
+                    if (current == null) {
+                        parent.rightChild = newNode;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean find(int value) {
+        Node current = root;
+        while (current != null) {
+            if (current.value == value) {
+                return true;
+            } else if (current.value > value) {
+                current = current.leftChild;
+            } else {
+                current = current.rightChild;
+            }
+        }
+        return false;
+    }
+
+    public void delete(int value) {
+        root = deleteRec(root, value);
+    }
+
+    private Node deleteRec(Node root, int value) {
+        if (root == null) {
+            return root;
+        }
+
+        if (value < root.value) {
+            root.leftChild = deleteRec(root.leftChild, value);
+        } else if (value > root.value) {
+            root.rightChild = deleteRec(root.rightChild, value);
+        } else {
+            if (root.leftChild == null) {
+                return root.rightChild;
+            } else if (root.rightChild == null) {
+                return root.leftChild;
+            }
+
+            root.value = minValue(root.rightChild);
+
+            root.rightChild = deleteRec(root.rightChild, root.value);
+        }
+
+        return root;
+    }
+
+    private int minValue(Node root) {
+        int minValue = root.value;
+        while (root.leftChild != null) {
+            minValue = root.leftChild.value;
+            root = root.leftChild;
+        }
+        return minValue;
+    }
+
+    public void traversePreOrder(Node node) {
+        if (node != null) {
+            System.out.print(node.value + " ");
+            traversePreOrder(node.leftChild);
+            traversePreOrder(node.rightChild);
+        }
+    }
+
+    public void traverseInOrder(Node node) {
+        if (node != null) {
+            traverseInOrder(node.leftChild);
+            System.out.print(node.value + " ");
+            traverseInOrder(node.rightChild);
+        }
+    }
+
+    public void traversePostOrder(Node node) {
+        if (node != null) {
+            traversePostOrder(node.leftChild);
+            traversePostOrder(node.rightChild);
+            System.out.print(node.value + " ");
+        }
+    }
+}
